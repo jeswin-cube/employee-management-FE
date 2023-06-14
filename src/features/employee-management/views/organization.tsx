@@ -2,6 +2,7 @@ import React from "react";
 import EmployeeNode from "../components/employee-node";
 import { useGetOrganizationData } from "../queries";
 import { Employee } from "../types";
+import { Tree, TreeNode } from "react-organizational-chart";
 
 const OrganizationChart: React.FC = () => {
   const { data: employees, isLoading: employeesDataLoading } = useGetOrganizationData();
@@ -9,11 +10,17 @@ const OrganizationChart: React.FC = () => {
   const buildHierarchy = (employees: Employee[], managerId: number | null): React.ReactNode[] => {
     const children: React.ReactNode[] = [];
     employees.forEach((employee) => {
-      if (employee.manager === managerId) {
+      if (employee.manager === managerId && managerId === null) {
         children.push(
-          <EmployeeNode key={employee.id} employee={employee}>
+          <Tree key={employee.id} label={<EmployeeNode employee={employee} />}>
             {buildHierarchy(employees, employee.id)}
-          </EmployeeNode>,
+          </Tree>,
+        );
+      } else if (employee.manager === managerId) {
+        children.push(
+          <TreeNode key={employee.id} label={<EmployeeNode employee={employee} />}>
+            {buildHierarchy(employees, employee.id)}
+          </TreeNode>,
         );
       }
     });
@@ -21,7 +28,7 @@ const OrganizationChart: React.FC = () => {
   };
 
   return (
-    <div className={"ml-[300px] mb-[80px]"}>
+    <div className={"mx-[100px] mb-[80px]"}>
       {!!employees && !employeesDataLoading ? buildHierarchy(employees, null) : null}
     </div>
   );
