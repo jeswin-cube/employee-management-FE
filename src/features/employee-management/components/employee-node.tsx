@@ -10,7 +10,7 @@ interface EmployeeNodeProps {
   children?: ReactNode[] | null;
 }
 
-const EmployeeNode: React.FC<EmployeeNodeProps> = ({ employee, children }) => {
+const EmployeeNode: React.FC<EmployeeNodeProps> = ({ employee }) => {
   const dragDropRef = useRef(null);
 
   const { mutate: updateEmployeeManager } = useUpdateEmployeeManager();
@@ -60,7 +60,7 @@ const EmployeeNode: React.FC<EmployeeNodeProps> = ({ employee, children }) => {
   }, []);
 
   return (
-    <div>
+    <div className={"flex items-center justify-center"}>
       <div
         ref={dragDropRef}
         onDragOver={(event) => event.preventDefault()}
@@ -72,9 +72,6 @@ const EmployeeNode: React.FC<EmployeeNodeProps> = ({ employee, children }) => {
         <p>{employee.team.name}</p>
         <p>{employee.designation.name}</p>
       </div>
-      {!!children ? ( // Check if children exist
-        <div style={{ marginLeft: "60px" }}>{children}</div>
-      ) : null}
       {errorText !== "" ? (
         <div className={"fixed top-[10px] left-[300px] bg-red-200 rounded-[8px] p-[8px]"}>{errorText}</div>
       ) : null}
